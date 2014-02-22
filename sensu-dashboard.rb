@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "lib"))
+
 require 'rubygems' if RUBY_VERSION < "1.9"
 require 'sinatra/base'
 require 'haml'
@@ -7,56 +9,9 @@ require 'json'
 require 'rufus/scheduler'
 require 'pry'
 require 'deep_merge'
-require 'data_mapper'
 require 'rest-client'
-
-DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/db/dashboard.db")
-
-class Server
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, String
-  has n, :services
-end
-
-class Service
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, String
-  property :site, String
-  property :type, String
-  property :events, Boolean
-  property :filter, String
-  belongs_to :server
-  has n, :views, :through => Resource
-end
-
-class View
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, String
-  has n, :services, :through => Resource
-end
-
-DataMapper.auto_upgrade!
-DataMapper.finalize
-
-# move somewhere else
-module HashExtensions
-
-  def symbolize_keys
-    inject({}) do |acc, (k,v)|
-      key = String === k ? k.to_sym : k
-      value = Hash === v ? v.symbolize_keys : v
-      acc[key] = value
-      acc
-    end
-  end # def symbolize_keys
-
-end # module HashExtensions
-Hash.send(:include, HashExtensions)
-
+require 'models'
+require 'hash-extensions'
 
 class SensuDashboard < Sinatra::Base
 
