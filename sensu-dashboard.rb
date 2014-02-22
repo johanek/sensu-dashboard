@@ -23,9 +23,9 @@ class SensuDashboard < Sinatra::Base
       url = "http://#{server.name}:4567/checks"
       begin
         checks = RestClient.get(url)
-      rescue Exception => e
+      rescue => e
         checks = "{}"
-        puts e
+        puts "Problem getting checks for #{server} - #{e}"
       end
 
       # Convert array to hash with check name as key
@@ -115,7 +115,7 @@ class SensuDashboard < Sinatra::Base
     url = "http://#{server}:4567/events"
     begin
       events = RestClient.get(url)
-    rescue Exception => e
+    rescue => e
       events = "{}"
       apifail(url,e)
     end
@@ -173,7 +173,7 @@ class SensuDashboard < Sinatra::Base
 
   def apifail(url,error)
     puts "Failed to connect to #{url}"
-    puts "Error: #{e}"
+    puts "Error: #{error}"
   end
 
 end # Class SensuDashboard
