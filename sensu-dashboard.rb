@@ -109,7 +109,7 @@ class SensuDashboard < Sinatra::Base
     services << Service.first(:id => params[:service])
     @servicedata = get_data(services)
     @priorityevents = extract_priorityevents(@servicedata)
-    haml :service
+    haml :services
   end
 
   get '/service/:service/events' do
@@ -118,7 +118,7 @@ class SensuDashboard < Sinatra::Base
     services << service
     @servicedata = get_data(services)
     @events = @servicedata[service.name]
-    haml :service
+    haml :services
   end
 
   def extract_priorityevents(views)
@@ -194,6 +194,7 @@ class SensuDashboard < Sinatra::Base
     data[:numcritical] = data[:critical].count
     data[:unknown] = data[:allevents].select { |hash| hash['status'] == 3 }
     data[:numunknown] = data[:unknown].count
+    data[:total] = data[:allevents].count
     data
   end
 
@@ -206,6 +207,7 @@ class SensuDashboard < Sinatra::Base
     data[:numcritical] = data[:critical].count
     data[:numwarning] = data[:warning].count
     data[:numunknown] = data[:unknown].count
+    data[:total] = data[:numcritical] + data[:numwarning] + data[:numunknown]
     data
   end
 

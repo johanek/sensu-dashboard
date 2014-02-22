@@ -1,10 +1,9 @@
 .row
-  - @viewdata.each_pair do |view,data|
-    - service = @services.first(:name => view)
-    - urlstub = "/service/#{data[:service_id]}"
-    - label = service[:name]
+  - @servicedata.each_pair do |service, data|
+    - urlstub = "/service/#{params[:service]}"
+    - label = service
     - if data[:total] > 0
-      - pct = data[:total] / 20
+      - pct = data[:total] / 20 
       - size = "alarm"
       - size += " large" if pct > 0.25
       - size += " larger" if pct > 0.5
@@ -14,4 +13,4 @@
         #{label}
       %span.events.count{:class => size}
         %a.events{:href => "#{urlstub}/events"}
-          #{data[:total]}
+          #{data[:total]} 
