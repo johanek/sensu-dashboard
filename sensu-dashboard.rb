@@ -94,13 +94,13 @@ class SensuDashboard < Sinatra::Base
 
   get '/' do
     @viewdata = get_all
-    @events = extract_events(@viewdata)
+    @priorityevents = extract_priorityevents(@viewdata)
     haml :views
   end
 
   get '/views/:view' do
     @viewdata = get_view(params[:view])
-    @events = extract_events(@viewdata)
+    @priorityevents = extract_priorityevents(@viewdata)
     haml :views
   end
 
@@ -108,11 +108,20 @@ class SensuDashboard < Sinatra::Base
     services = Array.new
     services << Service.first(:id => params[:service])
     @servicedata = get_data(services)
-    @events = extract_events(@servicedata)
+    @priorityevents = extract_priorityevents(@servicedata)
     haml :service
   end
 
-  def extract_events(views)
+  get '/service/:service/events' do
+    services = Array.new
+    service = Service.first(:id => params[:service])
+    services << service
+    @servicedata = get_data(services)
+    @events = @servicedata[service.name]
+    haml :service
+  end
+
+  def extract_priorityevents(views)
     events = Hash.new
     views.each_pair do |view, data|
       events.deep_merge!(data[:events]) if data[:events]
