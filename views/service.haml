@@ -1,14 +1,13 @@
 .row
-  - @viewdata.each_pair do |view,data|
-    - service = @services.first(:name => view)
-    - urlstub = "/service/#{data[:service_id]}"
+  - @servicedata.each_pair do |service, data|
+    - urlstub = "/service/#{params[:service]}"
     .col-lg-4.col-md-4
       %div.panel.panel-default
         %div.panel-heading
           %h3.panel-title 
             %a{:href => urlstub}
               %i.icon-tasks
-            #{service[:name]}
+            #{service}
         %div.panel-body.text-center
           %a.btn.btn-danger{:href => "#{urlstub}/events"}
             %span.bigger-150 #{data[:numcritical]} 

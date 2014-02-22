@@ -98,10 +98,18 @@ class SensuDashboard < Sinatra::Base
     haml :views
   end
 
-  get '/:view' do
+  get '/views/:view' do
     @viewdata = get_view(params[:view])
     @events = extract_events(@viewdata)
     haml :views
+  end
+
+  get '/service/:service' do
+    services = Array.new
+    services << Service.first(:id => params[:service])
+    @servicedata = get_data(services)
+    @events = extract_events(@servicedata)
+    haml :service
   end
 
   def extract_events(views)
@@ -127,6 +135,7 @@ class SensuDashboard < Sinatra::Base
     services.each do |service|
       d = build_hash(service.server.name)
       d = filter(d,service.filter) if service.filter
+      d[:service_id] = service.id
       output[service.name] = d
     end
     output
