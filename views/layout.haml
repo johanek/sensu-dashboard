@@ -15,36 +15,6 @@
     %link{:rel => "stylesheet", :href => "/css/dataTables-bootstrap.css"}/
     %link{:rel => "stylesheet", :href => "/css/font-awesome.min.css"}/
     %script{:src => "/js/jquery.js"}
-
-    /:css
-    /  body {
-    /    padding-top: 40px;
-    /  }
-    /  .text-center {
-    /    text-align: center;
-    /  }
-    /  .bubble {
-    /    padding: 0px;
-    /    margin-top: 0px;
-    /    margin-bottom: 0px;
-    /  }
-    /  .bubble-top {
-    /    border-radius: 8px 8px 0px 0px;
-    /  }
-    /  .bubble-bottom {
-    /    border-radius: 0px 0px 8px 8px;
-    /  }
-    /  .critical {
-    /    background-color: rgb(218, 79, 73);
-    /    color: white;
-    /  }
-    /  .warning {
-    /    background-color: rgb(250, 167, 50);
-    /  }
-    /  .ok {
-    /    background-color: rgb(81, 163, 81);
-    /  }
-    / Le fav and touch icons
     %link{:href => "images/favicon.ico", :rel => "shortcut icon"}/
     %link{:href => "images/apple-touch-icon.png", :rel => "apple-touch-icon"}/
     %link{:href => "images/apple-touch-icon-72x72.png", :rel => "apple-touch-icon", :sizes => "72x72"}/
@@ -60,6 +30,10 @@
               %a{:href => "/"} 
                 %i.icon-th-large
                 Dashboard
+            - @views.each do |view|
+              %li
+                %a{:href => "/views/#{view.name}"}
+                  #{view.name.capitalize}
     .container
       %p= yield
       .row
