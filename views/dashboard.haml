@@ -1,0 +1,102 @@
+.col-lg-12
+  - if @events.count > 0
+    - if @events.has_key? :critical
+      - if @events[:critical].count > 0
+        .panel.panel-danger
+          .panel-heading{:title => "Critical Priority Alerts"}
+            .h3 Critical Priority Alerts
+          .panel-body
+            %table.table.table-condensed.table-hover{:width => "100%"}
+              %tbody
+                %tr
+                  %th{:style => "min-width: 220px"} Client
+                  %th{:style => "min-width: 200px"} Check
+                  %th Output
+              - @events[:critical].each do |event|
+                %tr
+                  - if event[:status] == 2
+                    %td 
+                      %b #{event[:client]} 
+                    %td #{event[:check]}
+                    %td #{event[:output]}
+      
+    - if @events.has_key? :high
+      - if @events[:high].count > 0
+        .panel.panel-warning
+          .panel-heading{:title => "High Priority Alerts"}
+            .h3 High Priority Alerts
+          .panel-body
+            %table.table.table-condensed.table-hover{:width => "100%"}
+              %tbody
+                %tr
+                  %th{:style => "min-width: 220px"} Client
+                  %th{:style => "min-width: 200px"} Check
+                  %th Output
+              - @events[:high].each do |event|
+                %tr
+                  - if event[:status] == 2
+                    %td 
+                      %b #{event[:client]} 
+                    %td #{event[:check]}
+                    %td #{event[:output]}
+
+    - if @events.has_key? :crit
+      - if @events[:crit].count > 0
+        .panel.panel-danger
+          .panel-heading{:title => "Critical Checks"}
+            .h3 Critical Checks
+          .panel-body
+            %table.table.table-condensed.table-hover{:width => "100%"}
+              %tbody
+                %tr
+                  %th{:style => "min-width: 220px"} Client
+                  %th{:style => "min-width: 200px"} Check
+                  %th Output
+              - @events[:crit].each do |event|
+                - event = event.symbolize_keys
+                %tr
+                  %td 
+                    %b #{event[:client]} 
+                  %td #{event[:check]}
+                  %td #{event[:output]}
+
+    - if @events.has_key? :warning
+      - if @events[:warning].count > 0
+        .panel.panel-warning
+          .panel-heading{:title => "Warning Checks"}
+            .h3  Warning Checks
+          .panel-body
+            %table.table.table-condensed.table-hover{:width => "100%"}
+              %tbody
+                %tr
+                  %th{:style => "min-width: 220px"} Client
+                  %th{:style => "min-width: 200px"} Check
+                  %th Output
+              - @events[:warning].each do |event|
+                - event = event.symbolize_keys
+                %tr
+                  %td 
+                    %b #{event[:client]} 
+                  %td #{event[:check]}
+                  %td #{event[:output]}
+
+    - if @events.has_key? :unknown
+      - if @events[:unknown].count > 0
+        .panel.panel-info
+          .panel-heading{:title => "Unknown Checks"}
+            .h3 Unknown Checks
+          .panel-body
+            %table.table.table-condensed.table-hover{:width => "100%"}
+              %tbody
+                %tr
+                  %th{:style => "min-width: 220px"} Client
+                  %th{:style => "min-width: 200px"} Check
+                  %th Output
+              - @events[:unknown].each do |event|
+                - event = event.symbolize_keys
+                %tr
+                  %td 
+                    %b #{event[:client]} 
+                  %td #{event[:check]}
+                  %td #{event[:output]}
+

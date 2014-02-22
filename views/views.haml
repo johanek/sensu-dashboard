@@ -1,0 +1,21 @@
+.row
+  .col-lg-2.col-md-6
+  - @viewdata.each_pair do |view,data|
+    - service = @services.first(:name => view)
+    .col-lg-4.col-md-6
+      %div.panel.panel-default
+        %div.panel-heading
+          %h3.panel-title 
+            %a{:href => "/#{service[:site]}/#{service[:type]}"} 
+              %i.icon-tasks
+            #{service[:name].capitalize}
+        %div.panel-body.text-center
+          %a.btn.btn-danger{:href => "/#{service[:site]}/#{service[:type]}/critical"}
+            %span.bigger-150 #{data[:numcritical]} 
+            %br Critical
+          %a.btn.btn-warning{:href => "/#{service[:site]}/#{service[:type]}/warning"}
+            %span.bigger-150 #{data[:numwarning]} 
+            %br Warning
+          %a.btn.btn-info{:href => "/#{service[:site]}/#{service[:type]}/unknown"}
+            %span.bigger-150 #{data[:numunknown]} 
+            %br Unknown
