@@ -1,9 +1,9 @@
-require 'rubygems' if RUBY_VERSION < "1.9"
 require 'data_mapper'
 
 DataMapper::Logger.new($stdout, :debug)
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/db/dashboard.db")
 
+# Server model
 class Server
   include DataMapper::Resource
   property :id, Serial
@@ -11,6 +11,7 @@ class Server
   has n, :services
 end
 
+# Service model
 class Service
   include DataMapper::Resource
   property :id, Serial
@@ -20,14 +21,15 @@ class Service
   property :events, Boolean
   property :filter, String
   belongs_to :server
-  has n, :views, :through => Resource
+  has n, :views, through: Resource
 end
 
+# View model
 class View
   include DataMapper::Resource
   property :id, Serial
   property :name, String
-  has n, :services, :through => Resource
+  has n, :services, through: Resource
 end
 
 DataMapper.auto_upgrade!

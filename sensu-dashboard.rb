@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), "lib"))
+$LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 
-require 'rubygems' if RUBY_VERSION < "1.9"
 require 'sinatra/base'
 require 'haml'
 require 'json'
@@ -13,33 +12,33 @@ require 'rest-client'
 require 'models'
 require 'hash-extensions'
 
+# SensuDashboard
 class SensuDashboard < Sinatra::Base
-
   scheduler = Rufus::Scheduler.new
-    
-  scheduler.every '10m', :first_in => '1s' do
-    @@checks = Hash.new
+  @@checks = {}
+
+  scheduler.every '10m', first_in: '1s' do
     Server.all.each do |server|
       url = "http://#{server.name}:4567/checks"
       begin
         checks = RestClient.get(url)
       rescue => e
-        checks = "{}"
+        checks = '{}'
         puts "Problem getting checks for #{server} - #{e}"
       end
 
       # Convert array to hash with check name as key
-      chex = Hash.new 
+      chex = {}
       JSON.parse(checks).each do |c|
         c = c.symbolize_keys
         name = c[:name].to_sym
         chex[name] = c
       end
       @@checks[server[:name]] = chex
-   end
-    puts "Updated check data"
-  end #scheduler
-  
+    end
+    puts 'Updated check data'
+  end # scheduler
+
   before '/*' do
     @servers = Server.all
     @services = Service.all
@@ -47,7 +46,7 @@ class SensuDashboard < Sinatra::Base
   end
 
   get '/' do
-    @viewdata = get_all
+    @viewdata = all_services
     @priorityevents = extract_priorityevents(@viewdata)
     haml :views
   end
@@ -60,7 +59,7 @@ class SensuDashboard < Sinatra::Base
 
   get '/service/:service' do
     services = Array.new
-    services << Service.first(:id => params[:service])
+    services << Service.first(id: params[:service])
     @servicedata = get_data(services)
     @priorityevents = extract_priorityevents(@servicedata)
     haml :services
@@ -68,7 +67,7 @@ class SensuDashboard < Sinatra::Base
 
   get '/service/:service/events' do
     services = Array.new
-    service = Service.first(:id => params[:service])
+    service = Service.first(id: params[:service])
     services << service
     @servicedata = get_data(services)
     @events = @servicedata[service.name]
@@ -76,61 +75,61 @@ class SensuDashboard < Sinatra::Base
   end
 
   get '/server/:server' do
-    @server = Server.first(:id => params[:server])
+    @server = Server.first(id: params[:server])
     @serverdata = build_hash(@server.name)
     @priorityevents = @serverdata[:events]
     haml :servers
   end
 
   get '/server/:server/events' do
-    @server = Server.first(:id => params[:server])
+    @server = Server.first(id: params[:server])
     @serverdata = build_hash(@server.name)
     @events = @serverdata
     haml :servers
   end
 
   def extract_priorityevents(views)
-    events = Hash.new
+    events = {}
     views.each_pair do |view, data|
       events.deep_merge!(data[:events]) if data[:events]
     end
     events
   end
 
-  def get_all
+  def all_services
     services = Service.all
     get_data(services)
   end
 
   def get_view(view)
-    services = View.first(:name => view).services
+    services = View.first(name: view).services
     get_data(services)
   end
 
   def get_data(services)
-    output = Hash.new
+    output = {}
     services.each do |service|
       d = build_hash(service.server.name)
-      d = filter(d,service.filter) if service.filter
+      d = filter(d, service.filter) if service.filter
       d[:service_id] = service.id
       output[service.name] = d
     end
     output
   end
-  
+
   def build_hash(server)
-    data = Hash.new
-    data[:events] = Hash.new
-    data[:events][:critical] = Array.new
-    data[:events][:high] = Array.new
+    data = {}
+    data[:events] = {}
+    data[:events][:critical] = []
+    data[:events][:high] = []
 
     # Get all our events
     url = "http://#{server}:4567/events"
     begin
       events = RestClient.get(url)
     rescue => e
-      events = "{}"
-      apifail(url,e)
+      events = '{}'
+      apifail(url, e)
     end
     data[:allevents] = JSON.parse(events)
 
@@ -139,7 +138,6 @@ class SensuDashboard < Sinatra::Base
 
       # Get event, client, check information
       event = event.symbolize_keys
-      client = shortclient(event[:client])
       check = event[:check].to_sym
       unless check == :keepalive
         checkdata = @@checks[server][check] if defined?(@@checks[server]) and defined?(@@checks[server][check])
@@ -149,12 +147,12 @@ class SensuDashboard < Sinatra::Base
       if defined?(checkdata[:priority])
         event[:priority] = checkdata[:priority]
       else
-          event[:priority] = "normal"
+        event[:priority] = 'normal'
       end
 
       # Create array of critical/high priority events
-      data[:events][:critical].push(event) if event[:priority] == "critical"
-      data[:events][:high].push(event) if event[:priority] == "high"
+      data[:events][:critical].push(event) if event[:priority] == 'critical'
+      data[:events][:high].push(event) if event[:priority] == 'high'
     end
 
     # Filter/Count events by check output
@@ -168,7 +166,7 @@ class SensuDashboard < Sinatra::Base
     data
   end
 
-  def filter(data,filter)
+  def filter(data, filter)
     data[:events][:critical] = data[:events][:critical].select { |hash| hash['client'] =~ /#{filter}/ }
     data[:events][:high] = data[:events][:high].select { |hash| hash['client'] =~ /#{filter}/ }
     data[:critical] = data[:critical].select { |hash| hash['client'] =~ /#{filter}/ }
@@ -183,12 +181,11 @@ class SensuDashboard < Sinatra::Base
 
   # Take FQDN and provide symbolized hostname
   def shortclient(client)
-    client.gsub(/\..*/,'').to_sym
+    client.gsub(/\..*/, '').to_sym
   end
 
-  def apifail(url,error)
+  def apifail(url, error)
     puts "Failed to connect to #{url}"
     puts "Error: #{error}"
   end
-
 end # Class SensuDashboard
