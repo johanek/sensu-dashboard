@@ -46,7 +46,6 @@ class SensuDashboard < Sinatra::Base
     @views = View.all
   end
 
-
   get '/' do
     @viewdata = get_all
     @priorityevents = extract_priorityevents(@viewdata)
@@ -74,6 +73,20 @@ class SensuDashboard < Sinatra::Base
     @servicedata = get_data(services)
     @events = @servicedata[service.name]
     haml :services
+  end
+
+  get '/server/:server' do
+    @server = Server.first(:id => params[:server])
+    @serverdata = build_hash(@server.name)
+    @priorityevents = @serverdata[:events]
+    haml :servers
+  end
+
+  get '/server/:server/events' do
+    @server = Server.first(:id => params[:server])
+    @serverdata = build_hash(@server.name)
+    @events = @serverdata
+    haml :servers
   end
 
   def extract_priorityevents(views)

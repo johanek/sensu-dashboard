@@ -1,0 +1,15 @@
+.row
+  - urlstub = "/server/#{params[:server]}"
+  - label = @server.name
+  - if @serverdata[:total] > 0
+    - pct = @serverdata[:total] / 20 
+    - size = "alarm"
+    - size += " large" if pct > 0.25
+    - size += " larger" if pct > 0.5
+    - size += " largest" if pct > 0.75
+  .col-lg-4.col-md-4.site
+    %span.name
+      #{label}
+    %span.events.count{:class => size}
+      %a.events{:href => "#{urlstub}/events"}
+        #{@serverdata[:total]} 
