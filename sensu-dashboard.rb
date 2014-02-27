@@ -139,9 +139,7 @@ class SensuDashboard < Sinatra::Base
       # Get event, client, check information
       event = event.symbolize_keys
       check = event[:check].to_sym
-      unless check == :keepalive
-        checkdata = @@checks[server][check] if defined?(@@checks[server]) and defined?(@@checks[server][check])
-      end
+      checkdata = @@checks[server][check] if check != :keepalive && defined?(@@checks[server]) && defined?(@@checks[server][check])
 
       # Get priority from check
       if defined?(checkdata[:priority])
