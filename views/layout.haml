@@ -30,10 +30,33 @@
               %a{:href => "/"} 
                 %i.icon-th-large
                 Dashboard
-            - @views.each do |view|
-              %li
-                %a{:href => "/views/#{view.name}"}
-                  #{view.name.capitalize}
+            %li.dropdown
+              %a.dropdown-toggle{:href => "#", :'data-toggle' => "dropdown"}
+                Servers
+                %b.caret
+              %ul.dropdown-menu
+                - @servers.each do |item|
+                  %li
+                    %a{:href => "/server/#{item.name}"}
+                      #{item.name}
+            %li.dropdown
+              %a.dropdown-toggle{:href => "#", :'data-toggle' => "dropdown"}
+                Services
+                %b.caret
+              %ul.dropdown-menu
+                - @services.each do |item|
+                  %li
+                    %a{:href => "/service/#{item.id}"}
+                      #{item.name}
+            %li.dropdown
+              %a.dropdown-toggle{:href => "#", :'data-toggle' => "dropdown"}
+                Views
+                %b.caret
+              %ul.dropdown-menu
+                - @views.each do |item|
+                  %li
+                    %a{:href => "/views/#{item.name}"}
+                      #{item.name}
     .container
       %p= yield
       .row
