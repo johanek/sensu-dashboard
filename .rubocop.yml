@@ -4,16 +4,7 @@ MethodLength:
 LineLength:
   Max: 160
 
-ClassLength:
-  Max: 200
-
-ClassVars:
-  Enabled: false
-
 CollectionMethods:
-  Enabled: false
-
-CaseEquality:
   Enabled: false
 
 Encoding:
