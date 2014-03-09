@@ -61,16 +61,11 @@ class SensuDashboard < Sinatra::Base
     services = Array.new
     services << Service.first(id: params[:service])
     @servicedata = get_data(services)
-    @priorityevents = extract_priorityevents(@servicedata)
-    haml :services
-  end
-
-  get '/service/:service/events' do
-    services = Array.new
-    service = Service.first(id: params[:service])
-    services << service
-    @servicedata = get_data(services)
-    @events = @servicedata[service.name]
+    if params[:events] == 'true'
+      @events = @servicedata[services.first.name]
+    else
+      @priorityevents = extract_priorityevents(@servicedata)
+    end
     haml :services
   end
 
