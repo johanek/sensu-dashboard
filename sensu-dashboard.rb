@@ -19,6 +19,7 @@ class SensuDashboard < Sinatra::Base
 
   scheduler.every '10m', first_in: '1s' do
     Server.all.each do |server|
+      @@checks[server[:name]] = {} unless @@checks[server[:name]].is_a?(Hash)
       url = "http://#{server.name}:4567/checks"
       begin
         checks = RestClient.get(url)
@@ -78,6 +79,12 @@ class SensuDashboard < Sinatra::Base
       @priorityevents = @serverdata[:events]
     end
     haml :servers
+  end
+
+  get '/server/:server/checks' do
+    @server = Server.first(id: params[:server])
+    @checks = @@checks[@server.name]
+    haml :checks
   end
 
   get '/new' do
