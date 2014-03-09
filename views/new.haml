@@ -1,9 +1,37 @@
 .row
-  %form.form-horizontal{:method => :post}
+  .col-sm-offset-2.col-sm-10
+    %h3{:style => "margin-bottom:20px"} Add Server
+  %form.form-horizontal{:method => :post, :action => "/server", :style => "margin-bottom:30px;"}
     .form-group
-      %label.col-sm-2.control-label{:for => "server_name"}New Server
-      .col-sm-6
+      %label.col-sm-2.control-label{:for => "server_name"} Name
+      .col-sm-4
         %input.form-control{:type => "text", :id => "server_name", :name => "server[name]", :placeholder => "Server Name"}
     .form-group
       .col-sm-offset-2.col-sm-10
         %button.btn.btn-default{:type => "submit"} Add Server
+
+  .col-sm-offset-2.col-sm-10
+    %h3{:style => "margin-bottom:20px"} Add Service
+  %form.form-horizontal{:method => :post, :action => "/service"}
+    .form-group
+      %label.col-sm-2.control-label{:for => "service_name"} Name
+      .col-sm-4
+        %input.form-control{:type => "text", :id => "service_name", :name => "service[name]", :placeholder => "Service Name"}
+    .form-group
+      %label.col-sm-2.control-label{:for => "service_filter"} Filter
+      .col-sm-4
+        %input.form-control{:type => "text", :id => "service_filter", :name => "service[filter]", :placeholder => "Filter"}
+    .form-group
+      %label.col-sm-2.control-label{:for => "service_server"} Server
+      .col-sm-4
+        %select.form-control{:id => "service_server", :name => "server"}
+          - @servers.each do |server|
+            %option #{server.name}
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          %label{:for => "service_events"}
+            %input{:type => "checkbox", :id => "service_events", :name => "service[events]", :value => "true"} Enable Events
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %button.btn.btn-default{:type => "submit"} Add Service

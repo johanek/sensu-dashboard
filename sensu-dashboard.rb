@@ -84,7 +84,7 @@ class SensuDashboard < Sinatra::Base
     haml :new
   end
 
-  post '/new' do
+  post '/server' do
     @server = Server.new(params[:server])
     if @server.save
       redirect "server/#{@server.id}"
@@ -92,6 +92,19 @@ class SensuDashboard < Sinatra::Base
       haml :new
     end
   end
+
+  post '/service' do
+    @server = Server.first(:name => params[:server])
+    @service = Service.new(params[:service])
+    @server.services << @service
+    if @service.save
+      redirect "service/#{@service.id}"
+    else
+      binding.pry
+      haml :new
+    end
+  end
+
 
   def extract_priorityevents(views)
     events = {}
