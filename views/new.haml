@@ -1,0 +1,9 @@
+.row
+  %form.form-horizontal{:method => :post}
+    .form-group
+      %label.col-sm-2.control-label{:for => "server_name"}New Server
+      .col-sm-6
+        %input.form-control{:type => "text", :id => "server_name", :name => "server[name]", :placeholder => "Server Name"}
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %button.btn.btn-default{:type => "submit"} Add Server

@@ -80,6 +80,19 @@ class SensuDashboard < Sinatra::Base
     haml :servers
   end
 
+  get '/new' do
+    haml :new
+  end
+
+  post '/new' do
+    @server = Server.new(params[:server])
+    if @server.save
+      redirect "server/#{@server.id}"
+    else
+      haml :new
+    end
+  end
+
   def extract_priorityevents(views)
     events = {}
     views.each_pair do |view, data|
