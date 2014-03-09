@@ -85,13 +85,6 @@ class SensuDashboard < Sinatra::Base
     haml :servers
   end
 
-  #get '/server/:server/events' do
-  #  @server = Server.first(id: params[:server])
-  #  @serverdata = build_hash(@server.name)
-  #  @events = @serverdata
-  #  haml :servers
-  #end
-
   def extract_priorityevents(views)
     events = {}
     views.each_pair do |view, data|
