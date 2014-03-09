@@ -77,16 +77,20 @@ class SensuDashboard < Sinatra::Base
   get '/server/:server' do
     @server = Server.first(id: params[:server])
     @serverdata = build_hash(@server.name)
-    @priorityevents = @serverdata[:events]
+    if params[:events] == 'true'
+      @events = @serverdata
+    else
+      @priorityevents = @serverdata[:events]
+    end
     haml :servers
   end
 
-  get '/server/:server/events' do
-    @server = Server.first(id: params[:server])
-    @serverdata = build_hash(@server.name)
-    @events = @serverdata
-    haml :servers
-  end
+  #get '/server/:server/events' do
+  #  @server = Server.first(id: params[:server])
+  #  @serverdata = build_hash(@server.name)
+  #  @events = @serverdata
+  #  haml :servers
+  #end
 
   def extract_priorityevents(views)
     events = {}

@@ -37,7 +37,7 @@
               %ul.dropdown-menu
                 - @servers.each do |item|
                   %li
-                    %a{:href => "/server/#{item.name}"}
+                    %a{:href => "/server/#{item.id}"}
                       #{item.name}
             %li.dropdown
               %a.dropdown-toggle{:href => "#", :'data-toggle' => "dropdown"}
