@@ -100,7 +100,19 @@ class SensuDashboard < Sinatra::Base
     if @service.save
       redirect "service/#{@service.id}"
     else
-      binding.pry
+      haml :new
+    end
+  end
+
+  post '/view' do
+    @view = View.new(params[:view])
+    params[:services].each do |service|
+      @service = Service.first(:name => service)
+      @view.services << @service
+    end
+    if @view.save
+      redirect "views/#{@view.name}"
+    else
       haml :new
     end
   end

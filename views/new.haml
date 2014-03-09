@@ -12,7 +12,7 @@
 
   .col-sm-offset-2.col-sm-10
     %h3{:style => "margin-bottom:20px"} Add Service
-  %form.form-horizontal{:method => :post, :action => "/service"}
+  %form.form-horizontal{:method => :post, :action => "/service", :style => "margin-bottom:30px;"}
     .form-group
       %label.col-sm-2.control-label{:for => "service_name"} Name
       .col-sm-4
@@ -35,3 +35,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         %button.btn.btn-default{:type => "submit"} Add Service
+
+  .col-sm-offset-2.col-sm-10
+    %h3{:style => "margin-bottom:20px"} Add View
+  %form.form-horizontal{:method => :post, :action => "/view", :style => "margin-bottom:30px;"}
+    .form-group
+      %label.col-sm-2.control-label{:for => "view_name"} Name
+      .col-sm-4
+        %input.form-control{:type => "text", :id => "view_name", :name => "view[name]", :placeholder => "View Name"}
+    .form-group
+      %label.col-sm-2.control-label{:for => "view_service"} Services
+      .col-sm-4
+        %select.form-control{:id => "view_service", :name => "services[]", :multiple => 'multiple', :size => "#{@services.length}" }
+          - @services.each do |service|
+            %option #{service.name}
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %button.btn.btn-default{:type => "submit"} Add View
+
+  .col-sm-offset-2.col-sm-10
