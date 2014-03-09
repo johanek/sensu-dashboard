@@ -139,6 +139,7 @@ class SensuDashboard < Sinatra::Base
       # Get event, client, check information
       event = event.symbolize_keys
       check = event[:check].to_sym
+      checkdata = {}
       checkdata = @@checks[server][check] if check != :keepalive && defined?(@@checks[server]) && defined?(@@checks[server][check])
 
       # Get priority from check
@@ -147,6 +148,18 @@ class SensuDashboard < Sinatra::Base
       else
         event[:priority] = 'normal'
       end
+
+      # Add length of time check has been failing
+      interval = checkdata.has_key?(:interval) ? checkdata[:interval] : 60
+      since = interval * event[:occurrences]
+      mm = since / 60
+      hh, mm = mm.divmod(60)
+      dd, hh = hh.divmod(24)
+      event[:since] = sprintf '%d days, %d hours, %d minutes', dd, hh, mm
+
+      # Add description to event
+      output = event[:output].split("\n")[0..-1].join(' ')
+      event[:description] = checkdata.has_key?(:description) ? checkdata[:description] : output[0..80].gsub(/\s\w+\s*$/, ' ...')
 
       # Create array of critical/high priority events
       data[:events][:critical].push(event) if event[:priority] == 'critical'

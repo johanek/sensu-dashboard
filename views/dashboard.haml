@@ -1,103 +1,73 @@
-.col-lg-12
+.col-lg-12{:style => "margin-top: 20px; padding-left: 0px; padding-right: 0px;"}
   - if defined?(@priorityevents)
-    - if @priorityevents.has_key? :critical
-      - if @priorityevents[:critical].count > 0
-        .panel.panel-danger
-          .panel-heading{:title => "Critical Priority Alerts"}
-            .h3 Critical Priority Alerts
-          .panel-body
-            %table.table.table-condensed.table-hover{:width => "100%"}
-              %tbody
-                %tr
-                  %th{:style => "min-width: 220px"} Client
-                  %th{:style => "min-width: 200px"} Check
-                  %th Output
-              - @priorityevents[:critical].each do |event|
-                %tr
-                  - if event[:status] == 2
-                    %td 
-                      %b #{event[:client]} 
-                    %td #{event[:check]}
-                    %td #{event[:output]}
-      
-    - if @priorityevents.has_key? :high
-      - if @priorityevents[:high].count > 0
-        .panel.panel-warning
-          .panel-heading{:title => "High Priority Alerts"}
-            .h3 High Priority Alerts
-          .panel-body
-            %table.table.table-condensed.table-hover{:width => "100%"}
-              %tbody
-                %tr
-                  %th{:style => "min-width: 220px"} Client
-                  %th{:style => "min-width: 200px"} Check
-                  %th Output
-              - @priorityevents[:high].each do |event|
-                %tr
-                  - if event[:status] == 2
-                    %td 
-                      %b #{event[:client]} 
-                    %td #{event[:check]}
-                    %td #{event[:output]}
+    %div{:style => "margin-bottom: 20px; padding-left: 10px"}
+      .h1 Priority Alerts
+    %table.table.table-hover{:width => "100%"}
+      %tbody
+        %tr
+          %th{:style => "width: 180px"} Client
+          %th{:style => "width: 150px"} Check
+          %th{:since => "width: 220px"} Since
+          %th Description
 
+          - if @priorityevents.has_key? :critical
+            - if @priorityevents[:critical].count > 0
+              - @priorityevents[:critical].each do |event|
+                - if event[:status] == 2
+                  %tr.danger
+                    %td
+                      %b #{event[:client]}
+                    %td #{event[:check]}
+                    %td #{event[:since]}
+                    %td #{event[:description]}
+          - if @priorityevents.has_key? :high
+            - if @priorityevents[:high].count > 0
+              - @priorityevents[:high].each do |event|
+                - if event[:status] == 2
+                  %tr
+                    %td
+                      %b #{event[:client]}
+                    %td #{event[:check]}
+                    %td #{event[:since]}
+                    %td #{event[:description]}
+      
   - if defined?(@events)
-    - if @events.has_key? :critical
-      - if @events[:critical].count > 0
-        .panel.panel-danger
-          .panel-heading{:title => "Critical Checks"}
-            .h3 Critical Checks
-          .panel-body
-            %table.table.table-condensed.table-hover{:width => "100%"}
-              %tbody
-                %tr
-                  %th{:style => "min-width: 220px"} Client
-                  %th{:style => "min-width: 200px"} Check
-                  %th Output
+    %div{:style => "margin-bottom: 20px; padding-left: 10px"}
+      .h1 All Checks
+    %table.table.table-hover{:width => "100%"}
+      %tbody
+        %tr
+          %th{:style => "width: 220px"} Client
+          %th{:style => "width: 100px"} Status
+          %th Check
+          %th Output
+          - if @events.has_key? :critical
+            - if @events[:critical].count > 0
               - @events[:critical].each do |event|
                 - event = event.symbolize_keys
-                %tr
-                  %td 
-                    %b #{event[:client]} 
+                %tr.danger
+                  %td
+                    %b #{event[:client]}
+                  %td CRITICAL
                   %td #{event[:check]}
                   %td #{event[:output]}
-
-    - if @events.has_key? :warning
-      - if @events[:warning].count > 0
-        .panel.panel-warning
-          .panel-heading{:title => "Warning Checks"}
-            .h3  Warning Checks
-          .panel-body
-            %table.table.table-condensed.table-hover{:width => "100%"}
-              %tbody
-                %tr
-                  %th{:style => "min-width: 220px"} Client
-                  %th{:style => "min-width: 200px"} Check
-                  %th Output
+          - if @events.has_key? :warning
+            - if @events[:warning].count > 0
               - @events[:warning].each do |event|
                 - event = event.symbolize_keys
-                %tr
-                  %td 
-                    %b #{event[:client]} 
+                %tr.warning
+                  %td
+                    %b #{event[:client]}
+                  %td WARNING
                   %td #{event[:check]}
                   %td #{event[:output]}
-
-    - if @events.has_key? :unknown
-      - if @events[:unknown].count > 0
-        .panel.panel-info
-          .panel-heading{:title => "Unknown Checks"}
-            .h3 Unknown Checks
-          .panel-body
-            %table.table.table-condensed.table-hover{:width => "100%"}
-              %tbody
-                %tr
-                  %th{:style => "min-width: 220px"} Client
-                  %th{:style => "min-width: 200px"} Check
-                  %th Output
+          - if @events.has_key? :unknown
+            - if @events[:unknown].count > 0
               - @events[:unknown].each do |event|
                 - event = event.symbolize_keys
-                %tr
-                  %td 
-                    %b #{event[:client]} 
+                %tr.info
+                  %td
+                    %b #{event[:client]}
+                  %td UNKNOWN
                   %td #{event[:check]}
                   %td #{event[:output]}
-
