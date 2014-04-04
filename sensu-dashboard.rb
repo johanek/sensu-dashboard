@@ -57,7 +57,7 @@ class SensuDashboard < Sinatra::Base
         name = c[:name].to_sym
         clientz[name] = c
       end
-      @@clients[server[:name]] = clientz 
+      @@clients[server[:name]] = clientz
     end
   end # scheduler
 
