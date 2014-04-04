@@ -63,6 +63,15 @@
                   %li
                     %a{:href => "/views/#{item.name}"}
                       #{item.name}
+            %li.dropdown
+              %a.dropdown-toggle{:href => "#", :'data-toggle' => "dropdown"}
+                Checks 
+                %b.caret
+              %ul.dropdown-menu
+                - @servers.each do |item|
+                  %li
+                    %a{:href => "/server/#{item.id}/checks"}
+                      #{item.name}
     .container
       %p= yield
       .row
