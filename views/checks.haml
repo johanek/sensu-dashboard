@@ -1,3 +1,18 @@
+=haml :servers
 .row
-  - @checks.each do |check|
-    = check.inspect
+  .col-lg-6{:style => "margin-top: 20px; padding-left: 0px; padding-right: 0px;"}
+    %div{:style => "margin-bottom: 20px; padding-left: 10px"}
+      .h1 Checks
+    %table.table.table-hover.tablesorter#sortable
+      %thead
+        %tr
+          %th Check
+          %th Subscribers 
+          %th Priority
+      %tbody
+        - @checks.sort_by { |name,check| name }.each do |check|
+          - unless check.last[:type] == "metric"
+            %tr
+              %td{:width => "250px"} #{check.last[:name]}
+              %td{:width => "300px"} #{check.last[:subscribers].join(', ')}
+              %td #{check.last[:priority]}

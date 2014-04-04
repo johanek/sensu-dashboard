@@ -83,6 +83,7 @@ class SensuDashboard < Sinatra::Base
 
   get '/server/:server/checks' do
     @server = Server.first(id: params[:server])
+    @serverdata = build_hash(@server.name)
     @checks = @@checks[@server.name]
     haml :checks
   end
