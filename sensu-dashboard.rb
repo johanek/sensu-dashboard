@@ -116,6 +116,24 @@ class SensuDashboard < Sinatra::Base
     haml :clients
   end
 
+  get '/health' do
+    servers = []
+    Server.all.each do |server|
+      url = "http://#{server.name}:4567/health?subscribers=1&messages=10000"
+      begin
+        response = RestClient.get(url)
+        code = response.code
+      rescue Errno::ECONNREFUSED
+        code = 503
+      rescue RestClient::ServiceUnavailable
+        code = 503
+      end
+      servers << server.name if code == 503
+    end
+
+    servers.to_json
+  end
+
   get '/new' do
     haml :new
   end
