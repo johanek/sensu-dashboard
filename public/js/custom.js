@@ -16,8 +16,6 @@ function checkhealth() {
           message = "Health check failed for " + data.join(', ');
           $('#server-status-message').text(message)
           $('#server-status').show();
-
-          console.log(data)
         } else {
           $('#server-status').hide();
         }
