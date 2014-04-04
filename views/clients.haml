@@ -1,0 +1,16 @@
+=haml :servers
+.row
+  .col-lg-6{:style => "margin-top: 20px; padding-left: 0px; padding-right: 0px;"}
+    %div{:style => "margin-bottom: 20px; padding-left: 10px"}
+      .h1 Clients
+    %table.table.table-hover.tablesorter#sortable
+      %thead
+        %tr
+          %th Client 
+          %th Subscriptions
+      %tbody
+        - @clients.sort_by { |name,client| name }.each do |client|
+          %tr
+            %td{:width => "250px"} #{client.last[:name]}
+            %td{:width => "300px"} 
+              = client.last[:subscriptions].sort.join(', ') if client.last[:subscriptions]

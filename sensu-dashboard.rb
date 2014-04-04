@@ -16,6 +16,7 @@ require 'hash-extensions'
 class SensuDashboard < Sinatra::Base
   scheduler = Rufus::Scheduler.new
   @@checks = {}
+  @@clients = {}
 
   scheduler.every '10m', first_in: '1s' do
     Server.all.each do |server|
@@ -38,6 +39,26 @@ class SensuDashboard < Sinatra::Base
       @@checks[server[:name]] = chex
     end
     puts 'Updated check data'
+
+    Server.all.each do |server|
+      @@clients[server[:name]] = {} unless @@clients[server[:name]].is_a?(Hash)
+      url = "http://#{server.name}:4567/clients"
+      begin
+        checks = RestClient.get(url)
+      rescue => e
+        checks = '{}'
+        puts "Problem getting clients for #{server} - #{e}"
+      end
+
+      # Convert array to hash with check name as key
+      clientz = {}
+      JSON.parse(checks).each do |c|
+        c = c.symbolize_keys
+        name = c[:name].to_sym
+        clientz[name] = c
+      end
+      @@clients[server[:name]] = clientz 
+    end
   end # scheduler
 
   before '/*' do
@@ -86,6 +107,13 @@ class SensuDashboard < Sinatra::Base
     @serverdata = build_hash(@server.name)
     @checks = @@checks[@server.name]
     haml :checks
+  end
+
+  get '/server/:server/clients' do
+    @server = Server.first(id: params[:server])
+    @serverdata = build_hash(@server.name)
+    @clients = @@clients[@server.name]
+    haml :clients
   end
 
   get '/new' do
