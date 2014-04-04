@@ -14,5 +14,6 @@
           - unless check.last[:type] == "metric"
             %tr
               %td{:width => "250px"} #{check.last[:name]}
-              %td{:width => "300px"} #{check.last[:subscribers].join(', ')}
+              %td{:width => "300px"} 
+                = check.last[:subscribers].join(', ') if check.last[:subscribers]
               %td #{check.last[:priority]}
